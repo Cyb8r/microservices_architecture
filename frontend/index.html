@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Frontend</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Microservices App</h1>
+        
+        <!-- Post Creation Form -->
+        <h2>Create a Post</h2>
+        <form id="postForm">
+            <input type="text" id="postText" placeholder="Enter post text" required>
+            <input type="text" id="userId" placeholder="Enter your user ID" required>
+            <button type="submit">Create Post</button>
+        </form>
+
+        <!-- Posts Section -->
+        <h2>Posts</h2>
+        <div id="posts"></div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
