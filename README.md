@@ -1,5 +1,3 @@
-# microservices_architecture
-
 # Microservices Frontend
 
 ## Overview
