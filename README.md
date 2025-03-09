@@ -59,5 +59,3 @@ Ensure you have the following installed:
 
 ## License
 This project is open-source and free to use.
-
-

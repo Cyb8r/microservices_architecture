@@ -1,0 +1,59 @@
+services:
+  posts-service:
+    build:
+      context: ./posts-service
+      dockerfile: Dockerfile
+    container_name: posts-service
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/posts
+    depends_on:
+      - mongo
+    networks:
+      - microservices-network
+
+  comments-service:
+    build:
+      context: ./comments-service
+      dockerfile: Dockerfile
+    container_name: comments-service
+    ports:
+      - "4001:4001"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/comments
+      - POSTS_SERVICE_URL=http://posts-service:4000
+    depends_on:
+      - mongo
+      - posts-service
+    networks:
+      - microservices-network
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - microservices-network
+
+  event-bus:
+    image: node:16
+    container_name: event-bus
+    working_dir: /app
+    volumes:
+      - ./event-bus:/app
+    ports:
+      - "4005:4005"
+    command: ["node", "index.js"]
+    networks:
+      - microservices-network
+
+volumes:
+  mongo-data:
+
+networks:
+  microservices-network:
+    driver: bridge
