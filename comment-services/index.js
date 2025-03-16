@@ -8,8 +8,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Hardcoded MongoDB URI
+const MONGODB_URI = "mongodb://mongo:27017/comments";
+
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/comments");
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Hardcoded Posts Service URL
+const POSTS_SERVICE_URL = "http://posts-service:4000";
+
+// Hardcoded Event Bus URL
+const EVENT_BUS_URL = "http://event-bus:4005/events";
 
 // Define Comment Schema and Model
 const CommentSchema = new mongoose.Schema({
@@ -63,7 +72,7 @@ app.post("/posts/:postId/comments", async (req, res) => {
     // Fetch the post to get the userId
     let post;
     try {
-      const response = await axios.get(`http://localhost:4000/posts/${postId}`);
+      const response = await axios.get(`${POSTS_SERVICE_URL}/posts/${postId}`);
       post = response.data;
       if (!post) {
         return res.status(404).send({ message: "Post not found" });
@@ -82,7 +91,7 @@ app.post("/posts/:postId/comments", async (req, res) => {
     await comment.save();
 
     // Emit CommentCreated event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "CommentCreated",
       data: { id, text, userId, postId },
     });
@@ -110,7 +119,7 @@ app.patch("/comments/:commentId", async (req, res) => {
     }
 
     // Emit CommentUpdated event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "CommentUpdated",
       data: { id: comment.id, text: comment.text, userId: comment.userId, postId: comment.postId },
     });
@@ -133,7 +142,7 @@ app.put("/comments/:commentId", async (req, res) => {
     );
 
     // Emit CommentUpdated event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "CommentUpdated",
       data: { id: comment.id, text: comment.text, userId: comment.userId, postId: comment.postId },
     });
@@ -154,7 +163,7 @@ app.delete("/comments/:commentId", async (req, res) => {
     }
 
     // Emit CommentDeleted event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "CommentDeleted",
       data: { id: req.params.commentId },
     });

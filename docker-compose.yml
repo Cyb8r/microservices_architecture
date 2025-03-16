@@ -1,7 +1,7 @@
 services:
   posts-service:
     build:
-      context: ./posts-service
+      context: ./post-service
       dockerfile: Dockerfile
     container_name: posts-service
     ports:
@@ -15,7 +15,7 @@ services:
 
   comments-service:
     build:
-      context: ./comments-service
+      context: ./comment-services
       dockerfile: Dockerfile
     container_name: comments-service
     ports:

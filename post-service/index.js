@@ -8,8 +8,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Hardcoded MongoDB URI
+const MONGODB_URI = "mongodb://mongo:27017/posts";
+
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/posts");
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Hardcoded Event Bus URL
+const EVENT_BUS_URL = "http://event-bus:4005/events";
 
 // Define Post Schema and Model
 const PostSchema = new mongoose.Schema({
@@ -55,7 +61,7 @@ app.post("/posts", async (req, res) => {
     await post.save();
 
     // Emit PostCreated event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "PostCreated",
       data: { id, postId, text, userId },
     });
@@ -82,7 +88,7 @@ app.patch("/posts/:postId", async (req, res) => {
     }
 
     // Emit PostUpdated event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "PostUpdated",
       data: { id: post.id, postId: post.postId, text: post.text, userId: post.userId },
     });
@@ -105,7 +111,7 @@ app.put("/posts/:postId", async (req, res) => {
     );
 
     // Emit PostUpdated event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "PostUpdated",
       data: { id: post.id, postId: post.postId, text: post.text, userId: post.userId },
     });
@@ -126,7 +132,7 @@ app.delete("/posts/:postId", async (req, res) => {
     }
 
     // Emit PostDeleted event
-    await axios.post("http://localhost:4005/events", {
+    await axios.post(EVENT_BUS_URL, {
       type: "PostDeleted",
       data: { postId: req.params.postId },
     });

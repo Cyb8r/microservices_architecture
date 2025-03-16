@@ -6,10 +6,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// List of service endpoints to forward events to
+// Hardcoded service endpoints to forward events to
 const SERVICE_URLS = [
-  "http://localhost:4000/events", // Posts service
-  "http://localhost:4001/events", // Comments service
+  "http://posts-service:4000/events", // Posts service
+  "http://comments-service:4001/events", // Comments service
   // Add more services here as needed
 ];
 
